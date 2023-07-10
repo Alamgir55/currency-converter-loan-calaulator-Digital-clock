@@ -7,10 +7,10 @@ class LoanCalculator:
       window.configure(background="light green")
       
       Label(window, font="Helvetica 12 bold", bg="light green", text="Annula Interest Rate").grid(row=1, column=1, sticky=W)
-      Label(window, font="Helvetica 12 bold", bg="light green", text="Number of Years").grid(row=1, column=1, sticky=W)
-      Label(window, font="Helvetica 12 bold", bg="light green", text="Loan Amount").grid(row=1, column=1, sticky=W)
-      Label(window, font="Helvetica 12 bold", bg="light green", text="Monthly Payment").grid(row=1, column=1, sticky=W)
-      Label(window, font="Helvetica 12 bold", bg="light green", text="Total Payment").grid(row=1, column=1, sticky=W)
+      Label(window, font="Helvetica 12 bold", bg="light green", text="Number of Years").grid(row=2, column=1, sticky=W)
+      Label(window, font="Helvetica 12 bold", bg="light green", text="Loan Amount").grid(row=3, column=1, sticky=W)
+      Label(window, font="Helvetica 12 bold", bg="light green", text="Monthly Payment").grid(row=4, column=1, sticky=W)
+      Label(window, font="Helvetica 12 bold", bg="light green", text="Total Payment").grid(row=5, column=1, sticky=W)
       
 
       self.annualInterestRateVar = StringVar()
@@ -28,3 +28,29 @@ class LoanCalculator:
       btComputePayment = Button(window, text="Compute Payment", bg="red", fg="white", font="Helvetica 14 bold", command=self.computePayment).grid(row=6, column=2, sticky=E)
       btClear = Button(window, text="Clear", bg="blue", fg="white", font="Helvetica 14 bold", command=self.delete_all).grid(row=6, column=8, padx=20, sticky=E)
       
+      window.mainloop()
+      
+    def computePayment(self):
+        monthlyPayment = self.getMonthlyPayment(
+          float(self.loanAmountVar.get()),
+          float(self.annualInterestRateVar.get()) / 1200,
+          int(self.numberofYearsVar.get()))
+        
+        self.monthlyPaymentVar.set(format(monthlyPayment, '10.2f'))
+        totalPayment = float(self.monthlyPaymentVar.get()) * 12 \
+        * int(self.numberofYearsVar.get())
+
+        self.totalPaymentVar.set(format(totalPayment, '10.2f'))
+
+    def getMonthlyPayment(self, loanAmount, monthlyInterestRate, numberofYear):
+        monthlyPayment = loanAmount * monthlyInterestRate / (1-1/(1 + monthlyInterestRate)** (numberofYear * 12))
+        return monthlyPayment
+      
+    def delete_all(self):
+        self.monthlyPaymentVar.set("")
+        self.loanAmountVar.set("")
+        self.annualInterestRateVar.set("")
+        self.numberofYearsVar.set("")
+        self.totalPaymentVar.set("")
+        
+LoanCalculator()
